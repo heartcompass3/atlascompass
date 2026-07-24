@@ -1,11 +1,11 @@
 {
-  "projectId": "atlascompass",
-  "appId": "1:867180999701:web:1584b5e9cf97ba28d3ca1c",
-  "apiKey": "AIzaSyD0-TrN4A3V0a09S7cFQLB-Iud02z3tt-0",
-  "authDomain": "atlascompass.firebaseapp.com",
-  "storageBucket": "atlascompass.firebasestorage.app",
-  "messagingSenderId": "867180999701",
+  "projectId": "tuned-ripple-1lll2",
+  "appId": "1:619676693932:web:875002d9d61fe890a97609",
+  "apiKey": "AIzaSyDF1nNruD4bpxOyswJo3nLfnRH1RvlVV1c",
+  "authDomain": "tuned-ripple-1lll2.firebaseapp.com",
+  "storageBucket": "tuned-ripple-1lll2.firebasestorage.app",
+  "messagingSenderId": "619676693932",
   "measurementId": "",
-  "oAuthClientId": "",
+  "oAuthClientId": "619676693932-72mc755v9u4flqsp3lsg9d6gb09ndbhk.apps.googleusercontent.com",
   "recaptchaSiteKey": ""
 }
