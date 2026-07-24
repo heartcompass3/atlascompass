@@ -1,23 +1,29 @@
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
-import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
 
 const app = express();
 const PORT = 3000;
 
-// Initialize Gemini client on the server with fallback to avoid top-level module initialization crashes
-const apiKey = process.env.GEMINI_API_KEY || "DUMMY_KEY_FOR_INIT";
-const ai = new GoogleGenAI({
-  apiKey: apiKey,
-  httpOptions: {
-    headers: {
-      'User-Agent': 'aistudio-build',
-    }
+// Dynamic loader for Gemini SDK to prevent ERR_REQUIRE_ESM on Vercel Serverless Functions
+let geminiClientInstance: any = null;
+async function getGeminiClient() {
+  if (!geminiClientInstance) {
+    const { GoogleGenAI } = await import("@google/genai");
+    const apiKey = process.env.GEMINI_API_KEY || "DUMMY_KEY_FOR_INIT";
+    geminiClientInstance = new GoogleGenAI({
+      apiKey: apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        }
+      }
+    });
   }
-});
+  return geminiClientInstance;
+}
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -134,6 +140,9 @@ ${preparedKB}
 
     const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
 
+    const ai = await getGeminiClient();
+
+
     const response = await ai.models.generateContent({
       model: selectedModel,
       contents: prompt,
@@ -184,6 +193,9 @@ app.post("/api/gemini/analyse-mechanism", async (req, res) => {
     }
 
     const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+
+    const ai = await getGeminiClient();
+
 
     const response = await ai.models.generateContent({
       model: selectedModel,
@@ -281,6 +293,9 @@ ${demographyInstructions}
 
     const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
 
+    const ai = await getGeminiClient();
+
+
     const response = await ai.models.generateContent({
       model: selectedModel,
       contents: prompt,
@@ -342,6 +357,9 @@ app.post("/api/articles/scrape", async (req, res) => {
 ${html.slice(0, 15000)}
 ----------------
 `;
+
+      const ai = await getGeminiClient();
+
 
       const aiResponse = await ai.models.generateContent({
         model: "gemini-2.5-flash",
@@ -450,6 +468,9 @@ ${demographyInstructions}
 
     const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
 
+    const ai = await getGeminiClient();
+
+
     const response = await ai.models.generateContent({
       model: selectedModel,
       contents: prompt,
@@ -516,6 +537,9 @@ ${prepareKnowledgeBaseContext(knowledgeBaseText) || "מאגר ידע כללי ש
 
     const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
 
+    const ai = await getGeminiClient();
+
+
     const response = await ai.models.generateContent({
       model: selectedModel,
       contents: prompt,
@@ -581,6 +605,9 @@ ${preparedKB}
     }
 
     const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+
+    const ai = await getGeminiClient();
+
 
     const response = await ai.models.generateContent({
       model: selectedModel,
@@ -680,6 +707,9 @@ ${preparedKB}
     }
 
     const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+
+    const ai = await getGeminiClient();
+
 
     const response = await ai.models.generateContent({
       model: selectedModel,
