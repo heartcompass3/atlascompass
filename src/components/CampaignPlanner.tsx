@@ -293,17 +293,25 @@ export default function CampaignPlanner({ knowledgeBaseText, selectedFile }: Cam
     try {
       const res = await fetch('/api/gemini/analyze-scripts-accuracy', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           scripts: scriptsToAnalyze,
           knowledgeBaseText: combinedKnowledge || undefined
         })
       });
 
-      if (!res.ok) {
-        throw new Error('שגיאה במהלך פניית הניתוח לג׳ימיני. אנא נסה שוב.');
+      const responseText = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!res.ok) {
+          throw new Error(`שגיאה בשרת: ${responseText.slice(0, 150) || 'תגובה לא תקינה'}`);
+        }
       }
-      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'שגיאה במהלך פניית הניתוח לג׳ימיני. אנא נסה שוב.');
+      }
       setAnalysisResult(data);
     } catch (err: any) {
       setAnalysisError(err.message || 'ניתוח הדיוק נכשל. ודא שברשותך חיבור תקין.');
@@ -341,12 +349,24 @@ export default function CampaignPlanner({ knowledgeBaseText, selectedFile }: Cam
         })
       });
 
-      if (!res.ok) throw new Error();
-      const data = await res.json();
+      const responseText = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!res.ok) {
+          throw new Error(responseText.slice(0, 150) || 'שגיאה ביצירת התסריט');
+        }
+      }
+
+      if (!res.ok) {
+        throw new Error(data.error || 'שגיאה ביצירת התסריט');
+      }
+
       setGeneratedScripts(prev => ({ ...prev, [index]: data.script }));
       setSelectedVideoIdx(index);
-    } catch (err) {
-      alert('שגיאה ביצירת התסריט. אנא נסה שוב.');
+    } catch (err: any) {
+      alert(`שגיאה ביצירת התסריט: ${err?.message || 'אנא נסה שוב.'}`);
     } finally {
       setScriptGenerating(null);
     }

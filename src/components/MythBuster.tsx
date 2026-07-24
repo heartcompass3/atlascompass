@@ -59,12 +59,20 @@ export default function MythBuster({ knowledgeBaseText, onSelectConceptForScript
         }),
       });
 
+      const responseText = await response.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!response.ok) {
+          throw new Error(`שגיאה בשרת: ${responseText.slice(0, 150) || 'תגובה לא תקינה'}`);
+        }
+      }
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || 'נכשלה יצירת הניתוח');
       }
 
-      const data: MythBusterResult = await response.json();
       cacheRef.current.set(cacheKey, data);
       setResult(data);
     } catch (err: any) {
