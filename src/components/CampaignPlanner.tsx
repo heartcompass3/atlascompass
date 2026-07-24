@@ -111,11 +111,19 @@ export default function CampaignPlanner({ knowledgeBaseText, selectedFile }: Cam
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: scraperUrl })
       });
-      if (!res.ok) {
-        throw new Error('שגיאה בשליפת המאמרים מהאתר. ודא שהכתובת תקינה.');
+      const responseText = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!res.ok) {
+          throw new Error(`שגיאה בשרת: ${responseText.slice(0, 150) || 'תגובה לא תקינה'}`);
+        }
       }
-      const data = await res.json();
-      if (data.articles && data.articles.length > 0) {
+      if (!res.ok) {
+        throw new Error(data.error || 'שגיאה בשליפת המאמרים מהאתר.');
+      }
+      if (data.articles && Array.isArray(data.articles) && data.articles.length > 0) {
         setScrapedArticles(data.articles);
         setSelectedArticle(data.articles[0]); // Select first automatically
       } else {

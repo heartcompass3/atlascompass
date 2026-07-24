@@ -9,9 +9,10 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-// Initialize Gemini client on the server
+// Initialize Gemini client on the server with fallback to avoid top-level module initialization crashes
+const apiKey = process.env.GEMINI_API_KEY || "DUMMY_KEY_FOR_INIT";
 const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
+  apiKey: apiKey,
   httpOptions: {
     headers: {
       'User-Agent': 'aistudio-build',
