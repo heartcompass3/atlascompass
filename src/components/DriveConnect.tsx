@@ -125,8 +125,20 @@ export default function DriveConnect({
       const driveFiles = await searchDriveFiles(accessToken, query);
       setFiles(driveFiles);
     } catch (err: any) {
-      console.error(err);
-      setError('שגיאה בטעינת קבצים מ-Drive. ייתכן שהרשאת הגישה פגה.');
+      console.error('Drive load files error:', err);
+      const msg = err?.message || '';
+      if (msg.includes('Google Drive API has not been used') || msg.includes('disabled')) {
+        setError(
+          'ה-Google Drive API אינו מופעל בפרויקט ה-Firebase החדש שלך.\n' +
+          'כדי להפעיל אותו בקליק אחד:\n' +
+          '1. היכנס לקישור הבא: https://console.cloud.google.com/apis/library/drive.googleapis.com\n' +
+          '2. ודא שהפרויקט atlascompass נבחר בראש המסך.\n' +
+          '3. לחץ על הכפתור "Enable" (הפעל).\n' +
+          '4. לאחר מכן רענן את האתר והתחבר שוב.'
+        );
+      } else {
+        setError(`שגיאה בטעינת קבצים מ-Drive: ${msg || 'ייתכן שהרשאת הגישה פגה או שלא אושרה הגישה ל-Drive בעת ההתחברות.'}`);
+      }
     } finally {
       setLoading(false);
     }
