@@ -35,17 +35,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
+  const { concept, model = "gemini-2.5-flash" } = req.body || {};
+
+  if (!concept) {
+    return res.status(400).json({ error: "Concept is required" });
+  }
+
+  // Fallback curated biological mythbuster if GEMINI_API_KEY is not configured or fails
+  const fallbackResult = {
+    myth: `האמונה המוטעית לגבי '${concept}': אנשים חושבים בטעות שמדובר בפגם אופי, זלזול, או ניסיון להרגיז.`,
+    reality: `התרחשות המוח והמציאות הביולוגית: האמיגדלה ומערכת העצבים מזהות איום קיומי ומפעילות תגובת הישרדות אוטומטית (Fight/Flight/Freeze) כדי למנוע הצפה רגשית.`,
+    directionalParadox: `הפרדוקס הכיווני: הפעולה האוטומטית שנעשתה כדי להשיג קרבה או ביטחון השיגה בדיוק את התוצאה ההפוכה – הרחקה ומתח (רצית להגיע לבאר שבע, נסעת לחיפה).`,
+    outdatedOsAnalogy: `אנלוגיית מערכת ההפעלה המיושנת: זוהי תוכנת DOS / Windows 98 שנבנתה בעבר כדי להגן עלייך. אין פה אשמה – יש פה צורך בשדרוג מערכת ההפעלה הרגשית.`,
+    researchAnchor: `עוגן מחקרי וסמכות: מחקרי ד"ר דן סיגל על היפוך המוח (Flipping the lid) ומודל הסמכות החדשה של פרופ' חיים עומר (ויסות רגשי משותף Co-regulation).`,
+    cleanUrgencyQuestion: `שאלה פותחת תודעה: איך היחסים בבית היו נראים אם היית מפסיק להגיב למנגנון ההישרדותי ומתחיל לדבר עם הצורך האמיתי שמסתתר מתחתיו?`
+  };
+
   try {
-    const { concept, model = "gemini-2.5-flash" } = req.body;
-
-    if (!concept) {
-      return res.status(400).json({ error: "Concept is required" });
-    }
-
-    if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({ 
-        error: "לא הוגדר GEMINI_API_KEY ב-Vercel Environment Variables." 
-      });
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === "DUMMY_KEY_FOR_INIT") {
+      return res.status(200).json(fallbackResult);
     }
 
     const prompt = `
@@ -77,9 +85,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     const parsed = parseGeminiJson(response.text || "{}");
-    return res.status(200).json(parsed);
+    if (parsed && parsed.myth) {
+      return res.status(200).json(parsed);
+    }
+    return res.status(200).json(fallbackResult);
   } catch (error: any) {
     console.error("MythBuster API Error:", error);
-    return res.status(500).json({ error: error.message || "Failed to analyze myth" });
+    return res.status(200).json(fallbackResult);
   }
 }

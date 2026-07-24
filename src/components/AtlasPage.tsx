@@ -10,6 +10,7 @@ interface AtlasPageProps {
 
 export default function AtlasPage({ knowledgeBaseText }: AtlasPageProps) {
   const [activeSubTab, setActiveSubTab] = useState<'mechanisms' | 'mythbuster'>('mechanisms');
+  const [mythbusterConcept, setMythbusterConcept] = useState<string>('');
   const [mechanisms, setMechanisms] = useState<Mechanism[]>([]);
   const [selectedMechanism, setSelectedMechanism] = useState<Mechanism | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -207,7 +208,7 @@ export default function AtlasPage({ knowledgeBaseText }: AtlasPageProps) {
       </div>
 
       {activeSubTab === 'mythbuster' ? (
-        <MythBuster knowledgeBaseText={knowledgeBaseText} />
+        <MythBuster knowledgeBaseText={knowledgeBaseText} initialConcept={mythbusterConcept} />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-right">
       
@@ -347,11 +348,14 @@ export default function AtlasPage({ knowledgeBaseText }: AtlasPageProps) {
                   </h2>
                 </div>
                 <button
-                  onClick={() => setActiveSubTab('mythbuster')}
+                  onClick={() => {
+                    setMythbusterConcept(`${selectedMechanism.name}: ${selectedMechanism.shortDescription || selectedMechanism.quote || ''}`);
+                    setActiveSubTab('mythbuster');
+                  }}
                   className="flex items-center gap-1.5 text-xs font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 px-3 py-1.5 rounded-xl transition-all cursor-pointer shrink-0"
                 >
                   <Zap className="w-3.5 h-3.5 text-amber-400" />
-                  נפץ מיתוס מנפץ מנגנון זה
+                  נפץ מיתוס מנגנון זה
                 </button>
               </div>
               {selectedMechanism.quote && (

@@ -4,6 +4,7 @@ import { Zap, Sparkles, RefreshCw, Coffee, Brain, ShieldAlert, CheckCircle2, Arr
 
 interface MythBusterProps {
   knowledgeBaseText: string;
+  initialConcept?: string;
   onSelectConceptForScript?: (conceptText: string) => void;
 }
 
@@ -16,8 +17,8 @@ const PRESET_CONCEPTS = [
   "אימפולסיביות ומסכים - מנגנון הדופמין והצפה רגשית"
 ];
 
-export default function MythBuster({ knowledgeBaseText, onSelectConceptForScript }: MythBusterProps) {
-  const [concept, setConcept] = useState('');
+export default function MythBuster({ knowledgeBaseText, initialConcept, onSelectConceptForScript }: MythBusterProps) {
+  const [concept, setConcept] = useState(initialConcept || '');
   const [selectedModel, setSelectedModel] = useState<'gemini-2.5-flash' | 'gemini-2.5-pro'>('gemini-2.5-flash');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +27,14 @@ export default function MythBuster({ knowledgeBaseText, onSelectConceptForScript
   const [copied, setCopied] = useState(false);
 
   const cacheRef = useRef<Map<string, MythBusterResult>>(new Map());
+
+  // Automatically load and analyze when initialConcept is passed from Atlas
+  React.useEffect(() => {
+    if (initialConcept && initialConcept.trim()) {
+      setConcept(initialConcept);
+      handleGenerate(initialConcept);
+    }
+  }, [initialConcept]);
 
   const handleGenerate = async (selectedConcept?: string, forceRefresh = false) => {
     const targetConcept = selectedConcept || concept;
