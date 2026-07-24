@@ -163,10 +163,20 @@ export default function CampaignPlanner({ knowledgeBaseText, selectedFile }: Cam
           targetDemography
         })
       });
-      if (!res.ok) {
-        throw new Error('שגיאה ביצירת תוכנית הקמפיין. נסה שוב.');
+      const responseText = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!res.ok) {
+          throw new Error(`שגיאה בשרת: ${responseText.slice(0, 150) || 'תגובה לא תקינה'}`);
+        }
       }
-      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'שגיאה ביצירת תוכנית הקמפיין. נסה שוב.');
+      }
+
       setCampaign(data);
     } catch (err: any) {
       setError(err.message || 'ארעה שגיאה בתהליך הניתוח של ג׳ימיני.');
@@ -208,10 +218,20 @@ export default function CampaignPlanner({ knowledgeBaseText, selectedFile }: Cam
         })
       });
 
-      if (!res.ok) {
-        throw new Error('שגיאה ביצירת סדרת התסריטים. אנא נסה שוב.');
+      const responseText = await res.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!res.ok) {
+          throw new Error(`שגיאה בשרת: ${responseText.slice(0, 150) || 'תגובה לא תקינה'}`);
+        }
       }
-      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'שגיאה ביצירת סדרת התסריטים. אנא נסה שוב.');
+      }
+
       setScriptSequence(data);
     } catch (err: any) {
       setSequenceError(err.message || 'ארעה שגיאה בתהליך הניתוח של ג׳ימיני.');
