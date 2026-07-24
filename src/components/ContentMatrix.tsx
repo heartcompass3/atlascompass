@@ -78,16 +78,24 @@ export default function ContentMatrix({ knowledgeBaseText, selectedFile }: Conte
         }),
       });
 
+      const responseText = await response.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!response.ok) {
+          throw new Error(`שגיאה בתקשורת עם השרת: ${responseText.slice(0, 150) || 'תגובה לא תקינה'}`);
+        }
+      }
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || 'נכשלה יצירת התסריט');
       }
 
-      const data = await response.json();
-      setGeneratedScript(data.script);
+      setGeneratedScript(data.script || '');
     } catch (err: any) {
       console.error(err);
-      setGenError(err.message || 'שגיאה ביצירת התסריט מול מנוע ה-AI.');
+      setGenError(err.message || 'אירעה שגיאה ביצירת התסריט');
     } finally {
       setGenerating(false);
     }

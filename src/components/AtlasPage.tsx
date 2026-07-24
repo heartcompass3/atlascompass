@@ -65,12 +65,20 @@ export default function AtlasPage({ knowledgeBaseText }: AtlasPageProps) {
         }),
       });
 
+      const responseText = await response.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!response.ok) {
+          throw new Error(`שגיאה בתקשורת עם השרת: ${responseText.slice(0, 150) || 'תגובה לא תקינה'}`);
+        }
+      }
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || 'נכשלה יצירת הניתוח המעמיק');
       }
 
-      const data = await response.json();
       const analysisText = data.analysis;
 
       // Let's create a newly analyzed Mechanism object

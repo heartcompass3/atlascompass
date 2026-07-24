@@ -63,12 +63,20 @@ export default function ArticleIntelligence({ knowledgeBaseText, selectedFile }:
         }),
       });
 
+      const responseText = await response.text();
+      let data: any = {};
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        if (!response.ok) {
+          throw new Error(`שגיאה בתקשורת עם השרת: ${responseText.slice(0, 150) || 'תגובה לא תקינה'}`);
+        }
+      }
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || 'נכשלה סריקת המאמרים ביצירת הסדרה');
       }
 
-      const data: ArticleSeriesResponse = await response.json();
       cacheRef.current.set(cacheKey, data);
       setResult(data);
     } catch (err: any) {

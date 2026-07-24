@@ -21,6 +21,23 @@ const ai = new GoogleGenAI({
 
 app.use(express.json({ limit: '10mb' }));
 
+// Helper to parse Gemini JSON responses safely (removing markdown code fences if present)
+function parseGeminiJson(text: string): any {
+  if (!text) return {};
+  let cleaned = text.trim();
+  if (cleaned.startsWith("```json")) {
+    cleaned = cleaned.replace(/^```json\s*/i, "").replace(/\s*```$/i, "").trim();
+  } else if (cleaned.startsWith("```")) {
+    cleaned = cleaned.replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
+  }
+  try {
+    return JSON.parse(cleaned);
+  } catch (err) {
+    console.error("Failed to parse Gemini JSON output:", cleaned);
+    throw new Error("פלט ה-AI לא התקבל בפורמט JSON תקין. נסה שוב.");
+  }
+}
+
 // Helper to optimize and truncate knowledge base text to prevent API token bloat
 function prepareKnowledgeBaseContext(text?: string, maxChars = 10000): string {
   if (!text || !text.trim()) return "";
@@ -585,7 +602,8 @@ ${preparedKB}
       }
     });
 
-    res.json(JSON.parse(response.text || "{}"));
+    const jsonOutput = parseGeminiJson(response.text || "{}");
+    res.json(jsonOutput);
   } catch (error: any) {
     console.error("Article Series Error:", error);
     res.status(500).json({ error: error.message || "Failed to generate article series breakdown" });
