@@ -3,13 +3,14 @@ import DriveConnect from './components/DriveConnect';
 import AtlasPage from './components/AtlasPage';
 import ContentMatrix from './components/ContentMatrix';
 import CampaignPlanner from './components/CampaignPlanner';
+import MythBuster from './components/MythBuster';
 import { DriveFile } from './types';
 import { initAuth } from './firebase';
 import { loadActiveKbState, saveActiveKbState } from './driveCache';
 import { Compass, Sparkles, Database, BookOpen, Layers, HelpCircle, Activity, ExternalLink, Calendar } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'atlas' | 'matrix' | 'planner'>('atlas');
+  const [activeTab, setActiveTab] = useState<'atlas' | 'matrix' | 'planner' | 'mythbuster'>('atlas');
   
   // Google Auth & Drive States (shared across panels)
   const [user, setUser] = useState<any>(null);
@@ -35,7 +36,7 @@ export default function App() {
   const [activeSloganIdx, setActiveSloganIdx] = useState(0);
   const slogans = [
     "ההתנהגות היא לא הבעיה. היא הרמז.",
-    "מאחורי כל תגובה יש מנגנון.",
+    "רצית להגיע לבאר שבע (קרבה), אבל נסעת לחיפה (מאבקי כוח).",
     "אנשים מנסים לשנות התנהגות, כשמה שבאמת צריך להשתנות הוא הסיפור שהמוח מספר."
   ];
 
@@ -76,8 +77,8 @@ export default function App() {
               <Compass className="w-6 h-6 animate-spin-slow" />
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight text-white">מפת מנגנוני הנפש</h1>
-              <p className="text-xs text-slate-400 font-medium mt-0.5">מערכת הפעלה פסיכולוגית ומנוע יצירת תוכן מבוסס מנגנונים</p>
+              <h1 className="text-xl font-bold tracking-tight text-white">AtlasCompass 2.0</h1>
+              <p className="text-xs text-slate-400 font-medium mt-0.5">מערכת הפעלה פסיכולוגית ומחולל תוכן מבוסס מנגנונים • לב המצפן</p>
             </div>
           </div>
 
@@ -90,10 +91,10 @@ export default function App() {
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800">
+          <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 flex-wrap gap-1">
             <button
               onClick={() => setActiveTab('atlas')}
-              className={`flex items-center gap-2 px-4 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 activeTab === 'atlas'
                   ? 'bg-slate-800 text-white shadow-sm border border-slate-700/50'
                   : 'text-slate-400 hover:text-slate-200'
@@ -104,25 +105,36 @@ export default function App() {
             </button>
             <button
               onClick={() => setActiveTab('matrix')}
-              className={`flex items-center gap-2 px-4 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 activeTab === 'matrix'
                   ? 'bg-slate-800 text-white shadow-sm border border-slate-700/50'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
-              מטריצת התוכן
+              מחולל התסריטים
             </button>
             <button
               onClick={() => setActiveTab('planner')}
-              className={`flex items-center gap-2 px-4 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 activeTab === 'planner'
                   ? 'bg-slate-800 text-white shadow-sm border border-slate-700/50'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               <Calendar className="w-3.5 h-3.5" />
-              תוכנית חודשית
+              סטודיו קמפיינים
+            </button>
+            <button
+              onClick={() => setActiveTab('mythbuster')}
+              className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                activeTab === 'mythbuster'
+                  ? 'bg-indigo-600 text-white shadow-sm border border-indigo-500/50'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              מנפץ המיתוסים
             </button>
           </div>
 
@@ -155,8 +167,10 @@ export default function App() {
             <AtlasPage knowledgeBaseText={knowledgeBaseText} />
           ) : activeTab === 'matrix' ? (
             <ContentMatrix knowledgeBaseText={knowledgeBaseText} selectedFile={selectedFile} />
-          ) : (
+          ) : activeTab === 'planner' ? (
             <CampaignPlanner knowledgeBaseText={knowledgeBaseText} selectedFile={selectedFile} />
+          ) : (
+            <MythBuster knowledgeBaseText={knowledgeBaseText} />
           )}
         </div>
 

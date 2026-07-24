@@ -3,13 +3,16 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/api/generate", "destination": "/api/generate" },
+    { "source": "/api/campaign", "destination": "/api/campaign" },
+    { "source": "/api/mechanism", "destination": "/api/mechanism" },
+    { "source": "/api/mythbuster", "destination": "/api/mythbuster" },
+    { "source": "/api/scrape", "destination": "/api/scrape" },
+    { "source": "/api/gemini/generate", "destination": "/api/generate" },
+    { "source": "/api/gemini/analyse-mechanism", "destination": "/api/mechanism" },
+    { "source": "/api/gemini/generate-campaign", "destination": "/api/campaign" },
+    { "source": "/api/gemini/mythbuster", "destination": "/api/mythbuster" },
+    { "source": "/api/articles/scrape", "destination": "/api/scrape" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
