@@ -55,7 +55,7 @@ function prepareKnowledgeBaseContext(text?: string, maxChars = 10000): string {
 // API: Generate Content script using Content Matrix
 app.post("/api/gemini/generate", async (req, res) => {
   try {
-    const { mechanism, pillar, template, platform, knowledgeBaseText, targetDemography, readyText, includeSecondaryGain, model = "gemini-2.5-flash" } = req.body;
+    const { mechanism, pillar, template, platform, knowledgeBaseText, targetDemography, readyText, includeSecondaryGain, model = "gemini-3.5-flash" } = req.body;
 
     if (!readyText && (!mechanism || !pillar)) {
       return res.status(400).json({ error: "Mechanism and Pillar are required, or a raw readyText draft must be provided" });
@@ -138,7 +138,7 @@ ${preparedKB}
 `;
     }
 
-    const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "gemini-3.1-pro" ? "gemini-3.1-pro" : "gemini-3.5-flash";
 
     const ai = await getGeminiClient();
 
@@ -161,7 +161,7 @@ ${preparedKB}
 // API: Dynamically analyze a mechanism for the "Atlas"
 app.post("/api/gemini/analyse-mechanism", async (req, res) => {
   try {
-    const { mechanismName, knowledgeBaseText, model = "gemini-2.5-flash" } = req.body;
+    const { mechanismName, knowledgeBaseText, model = "gemini-3.5-flash" } = req.body;
 
     if (!mechanismName) {
       return res.status(400).json({ error: "Mechanism name is required" });
@@ -192,7 +192,7 @@ app.post("/api/gemini/analyse-mechanism", async (req, res) => {
       prompt += `\n\nהשתמש במידע התומך הבא ממאגר הידע של היוצר להתאמת השפה והניתוח:\n${preparedKB}\n`;
     }
 
-    const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "gemini-3.1-pro" ? "gemini-3.1-pro" : "gemini-3.5-flash";
 
     const ai = await getGeminiClient();
 
@@ -215,7 +215,7 @@ app.post("/api/gemini/analyse-mechanism", async (req, res) => {
 // API: Generate Campaign / Monthly Content Series
 app.post("/api/gemini/generate-campaign", async (req, res) => {
   try {
-    const { theme, seriesType, useZeigarnik, platforms, knowledgeBaseText, targetDemography, model = "gemini-2.5-flash" } = req.body;
+    const { theme, seriesType, useZeigarnik, platforms, knowledgeBaseText, targetDemography, model = "gemini-3.5-flash" } = req.body;
     
     const numVideos = seriesType === "short_series" ? 3 : seriesType === "monthly_series" ? 10 : 12;
     const formatDescription = useZeigarnik 
@@ -291,7 +291,7 @@ ${demographyInstructions}
                 "\n---------------------------------------------------------------\n";
     }
 
-    const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "gemini-3.1-pro" ? "gemini-3.1-pro" : "gemini-3.5-flash";
 
     const ai = await getGeminiClient();
 
@@ -362,7 +362,7 @@ ${html.slice(0, 15000)}
 
 
       const aiResponse = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-3.5-flash",
         contents: prompt,
         config: {
           responseMimeType: "application/json",
@@ -404,7 +404,7 @@ ${html.slice(0, 15000)}
 // API: Generate Connected Script Sequence (Zeigarnik Cliffhanger Series)
 app.post("/api/gemini/generate-script-sequence", async (req, res) => {
   try {
-    const { theme, count, platform, knowledgeBaseText, targetDemography, model = "gemini-2.5-flash" } = req.body;
+    const { theme, count, platform, knowledgeBaseText, targetDemography, model = "gemini-3.5-flash" } = req.body;
     const numScripts = count || 3;
     const platformText = platform || "tiktok/reels";
 
@@ -466,7 +466,7 @@ ${demographyInstructions}
       prompt += "\n\nהשתמש במידע תומך זה ממאגר הידע של היוצר להעשרת השפה והפרטים:\n" + preparedKB + "\n";
     }
 
-    const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "gemini-3.1-pro" ? "gemini-3.1-pro" : "gemini-3.5-flash";
 
     const ai = await getGeminiClient();
 
@@ -491,7 +491,7 @@ ${demographyInstructions}
 // API: Analyze Professional Language Accuracy and Consistency
 app.post("/api/gemini/analyze-scripts-accuracy", async (req, res) => {
   try {
-    const { scripts, knowledgeBaseText, model = "gemini-2.5-flash" } = req.body;
+    const { scripts, knowledgeBaseText, model = "gemini-3.5-flash" } = req.body;
 
     const prompt = `
 אתה מעריך תוכן ומטפל מוסמך מומחה המתמחה בהדרכת הורים למתבגרים וטיפול רגשי בנוער. תפקידך לבחון סדרה של תסריטים או תכנים שנוצרו עבור קמפיין, ולתת ציון "דיוק לשפה המקצועית" וניתוח מעמיק המבוסס על מאגר הידע של בית הספר "לב המצפן".
@@ -535,7 +535,7 @@ ${prepareKnowledgeBaseContext(knowledgeBaseText) || "מאגר ידע כללי ש
 }
 `;
 
-    const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "gemini-3.1-pro" ? "gemini-3.1-pro" : "gemini-3.5-flash";
 
     const ai = await getGeminiClient();
 
@@ -560,7 +560,7 @@ ${prepareKnowledgeBaseContext(knowledgeBaseText) || "מאגר ידע כללי ש
 // API: MythBuster Engine (Myth vs. Biological/Psychological Reality)
 app.post("/api/gemini/mythbuster", async (req, res) => {
   try {
-    const { concept, knowledgeBaseText, model = "gemini-2.5-flash" } = req.body;
+    const { concept, knowledgeBaseText, model = "gemini-3.5-flash" } = req.body;
 
     if (!concept) {
       return res.status(400).json({ error: "Concept is required" });
@@ -604,7 +604,7 @@ ${preparedKB}
 `;
     }
 
-    const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "gemini-3.1-pro" ? "gemini-3.1-pro" : "gemini-3.5-flash";
 
     const ai = await getGeminiClient();
 
@@ -628,7 +628,7 @@ ${preparedKB}
 // API: Article Intelligence & Series / Guide Generator
 app.post("/api/gemini/article-series", async (req, res) => {
   try {
-    const { topic, outputType = "both", knowledgeBaseText, model = "gemini-2.5-flash" } = req.body;
+    const { topic, outputType = "both", knowledgeBaseText, model = "gemini-3.5-flash" } = req.body;
 
     if (!topic) {
       return res.status(400).json({ error: "Topic is required" });
@@ -706,7 +706,7 @@ ${preparedKB}
 `;
     }
 
-    const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "gemini-3.1-pro" ? "gemini-3.1-pro" : "gemini-3.5-flash";
 
     const ai = await getGeminiClient();
 

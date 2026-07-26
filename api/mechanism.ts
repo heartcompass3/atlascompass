@@ -21,7 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { mechanismName, knowledgeBaseText, model = "gemini-2.5-flash" } = req.body;
+    const { mechanismName, knowledgeBaseText, model = "gemini-3.5-flash" } = req.body;
 
     if (!mechanismName) {
       return res.status(400).json({ error: "Mechanism name is required" });
@@ -57,7 +57,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 `;
 
     const ai = await getGeminiClient();
-    const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "gemini-3.1-pro" ? "gemini-3.1-pro" : "gemini-3.5-flash";
 
     const response = await ai.models.generateContent({
       model: selectedModel,

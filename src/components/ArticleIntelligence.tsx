@@ -18,7 +18,7 @@ const TOPIC_PRESETS = [
 export default function ArticleIntelligence({ knowledgeBaseText, selectedFile }: ArticleIntelligenceProps) {
   const [topic, setTopic] = useState('');
   const [outputType, setOutputType] = useState<'video_series' | 'short_guide' | 'both'>('both');
-  const [selectedModel, setSelectedModel] = useState<'gemini-2.5-flash' | 'gemini-2.5-pro'>('gemini-2.5-flash');
+  const [selectedModel, setSelectedModel] = useState<'gemini-3.5-flash' | 'gemini-3.1-pro'>('gemini-3.5-flash');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ArticleSeriesResponse | null>(null);
@@ -205,27 +205,27 @@ ${g.summaryCallToAction}
           <div className="inline-flex bg-slate-900 border border-slate-800 p-1 rounded-xl text-xs w-full sm:w-auto">
             <button
               type="button"
-              onClick={() => setSelectedModel('gemini-2.5-flash')}
+              onClick={() => setSelectedModel('gemini-3.5-flash')}
               className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                selectedModel === 'gemini-2.5-flash'
+                selectedModel === 'gemini-3.5-flash'
                   ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               <Zap className="w-3.5 h-3.5" />
-              Gemini 2.5 Flash (מהיר וחסכוני)
+              Gemini 3.5 Flash (מהיר וחסכוני)
             </button>
             <button
               type="button"
-              onClick={() => setSelectedModel('gemini-2.5-pro')}
+              onClick={() => setSelectedModel('gemini-3.1-pro')}
               className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                selectedModel === 'gemini-2.5-pro'
+                selectedModel === 'gemini-3.1-pro'
                   ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               <Cpu className="w-3.5 h-3.5" />
-              Gemini 2.5 Pro (ניתוח מעמיק)
+              Gemini 3.1 Pro (ניתוח מעמיק)
             </button>
           </div>
         </div>

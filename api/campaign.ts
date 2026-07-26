@@ -36,7 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { theme, seriesType, useZeigarnik, platforms, knowledgeBaseText, targetDemography, model = "gemini-2.5-flash" } = req.body;
+    const { theme, seriesType, useZeigarnik, platforms, knowledgeBaseText, targetDemography, model = "gemini-3.5-flash" } = req.body;
     
     if (!process.env.GEMINI_API_KEY) {
       return res.status(500).json({ 
@@ -80,7 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 `;
 
     const ai = await getGeminiClient();
-    const selectedModel = model === "gemini-2.5-pro" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "gemini-3.1-pro" ? "gemini-3.1-pro" : "gemini-3.5-flash";
 
     const response = await ai.models.generateContent({
       model: selectedModel,

@@ -19,7 +19,7 @@ const PRESET_CONCEPTS = [
 
 export default function MythBuster({ knowledgeBaseText, initialConcept, onSelectConceptForScript }: MythBusterProps) {
   const [concept, setConcept] = useState(initialConcept || '');
-  const [selectedModel, setSelectedModel] = useState<'gemini-2.5-flash' | 'gemini-2.5-pro'>('gemini-2.5-flash');
+  const [selectedModel, setSelectedModel] = useState<'gemini-3.5-flash' | 'gemini-3.1-pro'>('gemini-3.5-flash');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<MythBusterResult | null>(null);
@@ -179,9 +179,9 @@ ${result.takeaway}
         <div className="inline-flex bg-slate-900 border border-slate-800 p-1 rounded-xl text-xs">
           <button
             type="button"
-            onClick={() => setSelectedModel('gemini-2.5-flash')}
+            onClick={() => setSelectedModel('gemini-3.5-flash')}
             className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1 transition-all cursor-pointer ${
-              selectedModel === 'gemini-2.5-flash'
+              selectedModel === 'gemini-3.5-flash'
                 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
@@ -191,9 +191,9 @@ ${result.takeaway}
           </button>
           <button
             type="button"
-            onClick={() => setSelectedModel('gemini-2.5-pro')}
+            onClick={() => setSelectedModel('gemini-3.1-pro')}
             className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1 transition-all cursor-pointer ${
-              selectedModel === 'gemini-2.5-pro'
+              selectedModel === 'gemini-3.1-pro'
                 ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
